@@ -31,16 +31,39 @@ namespace Maze.Solver
         /// </remarks>
         public void MoveRobotToExit()
         {
-            // Here you have to add your code
+            // Try all directions
+            if (!findExit(Direction.Right))
+                if (!findExit(Direction.Left))
+                    if (!findExit(Direction.Up))
+                        if (!findExit(Direction.Down));
+        }
 
-            // Trivial sample algorithm that can just move right
+        // Backtracker that moves the robot to the exit
+        public bool findExit(Direction direction)
+        {
+            if (!robot.CanIMove(direction))
+                return false;
+
+            // Ending condition
             var reachedEnd = false;
             robot.ReachedExit += (_, __) => reachedEnd = true;
 
-            while (!reachedEnd)
-            {
-                robot.Move(Direction.Right);
-            }
+            if (reachedEnd)
+                return true;
+
+            robot.Move(direction);
+
+            if (findExit(Direction.Right))
+                return true;
+            if (findExit(Direction.Left))
+                return true;
+            if (findExit(Direction.Up))
+                return true;
+            if (findExit(Direction.Down))
+                return true;
+
+            robot.HaltAndCatchFire();
+            return false;
         }
     }
 }
